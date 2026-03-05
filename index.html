@@ -1,70 +1,107 @@
 <!DOCTYPE html>
 <html>
-<body>
+<head>
+<meta charset="UTF-8">
+<title>Escáner de Jugadores</title>
 
-<h1>Beneficios Jugadores</h1>
+<script src="https://unpkg.com/html5-qrcode"></script>
 
-<div id="resultado"></div>
-
-</body>
-</script>
-<script>
-
-const sheetURL = "https://docs.google.com/spreadsheets/d/1j7MPov5JzbsGiB82DhMZRiPeq1gWaskuzL1smx0ig18/export?format=csv";
-
-function obtenerParametro(nombre) {
-  const url = new URL(window.location.href);
-  return url.searchParams.get(nombre);
+<style>
+body{
+font-family:Arial;
+text-align:center;
+margin-top:40px;
 }
 
-const jugadorID = obtenerParametro("id");
+#reader{
+width:300px;
+margin:auto;
+}
+
+#resultado{
+margin-top:30px;
+font-size:20px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Escanear QR del jugador</h2>
+
+<div id="reader"></div>
+
+<div id="resultado">
+Esperando escaneo...
+</div>
+
+<script>
+
+const sheetURL = "PEGA_AQUI_TU_LINK_CSV";
+
+let jugadores = [];
 
 fetch(sheetURL)
-  .then(response => response.text())
-  .then(data => {
+.then(res => res.text())
+.then(data => {
 
-    const filas = data.split("\n");
+const filas = data.split("\n").slice(1);
 
-    filas.forEach((fila, index) => {
+jugadores = filas.map(f => {
+const c = f.split(",");
+return {
+id:c[0],
+nombre:c[1],
+equipo:c[2],
+beneficio:c[3]
+};
+});
 
-      if(index === 0) return; // salta encabezado
+});
 
-      const columnas = fila.split(",");
+function buscarJugador(id){
 
-      const nombre = columnas[1];
-      const dni = columnas[2];
-      const club = columnas[3];
-      const categoria = columnas[4];
-      const ficha = columnas[5];
-      const estado = columnas[6];
+const j = jugadores.find(x => x.id == id);
 
-      if(ficha == jugadorID){
+if(j){
 
-        if(estado.trim() === "Activo"){
+document.getElementById("resultado").innerHTML = `
+<h3>${j.nombre}</h3>
+<p>Equipo: ${j.equipo}</p>
+<p>Beneficio: ${j.beneficio}</p>
+`;
 
-          document.getElementById("resultado").innerHTML = `
-          <h2>${nombre}</h2>
-          <p>DNI: ${dni}</p>
-          <p>Club: ${club}</p>
-          <p>Categoría: ${categoria}</p>
-          <p style="color:green;font-weight:bold;">Jugador habilitado</p>
-          `;
+}else{
 
-        } else {
+document.getElementById("resultado").innerHTML = "Jugador no encontrado";
 
-          document.getElementById("resultado").innerHTML = `
-          <h2>${nombre}</h2>
-          <p style="color:red;font-weight:bold;">Jugador NO habilitado</p>
-          `;
+}
 
-        }
+}
 
-      }
+function onScanSuccess(decodedText){
 
-    });
+buscarJugador(decodedText);
 
-  });
+}
+
+const html5QrCode = new Html5Qrcode("reader");
+
+Html5Qrcode.getCameras().then(devices => {
+
+if(devices.length){
+
+html5QrCode.start(
+devices[0].id,
+{ fps: 10, qrbox: 250 },
+onScanSuccess
+);
+
+}
+
+});
 
 </script>
+
 </body>
 </html>
