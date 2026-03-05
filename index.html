@@ -1,63 +1,70 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="UTF-8">
-<title>Validación Jugador</title>
-<style>
-body{
-font-family: Arial;
-text-align:center;
-margin-top:100px;
-}
-.card{
-border:1px solid #ccc;
-padding:30px;
-width:300px;
-margin:auto;
-border-radius:10px;
-}
-</style>
-</head>
-
 <body>
 
-<div class="card">
-<h2>Validación de Jugador</h2>
-<div id="resultado"></div>
-</div>
+<h1>Beneficios Jugadores</h1>
 
+<div id="resultado"></div>
+
+</body>
+</script>
 <script>
 
-const jugadores = {
-"92833":{
-nombre:"Juan Perez",
-club:"Tigre FC",
-activo:true
-},
-"12345":{
-nombre:"Lucas Diaz",
-club:"River FC",
-activo:true
-}
-};
+const sheetURL = "https://docs.google.com/spreadsheets/d/1j7MPov5JzbsGiB82DhMZRiPeq1gWaskuzL1smx0ig18/export?format=csv";
 
-const params = new URLSearchParams(window.location.search);
-const id = params.get("id");
-
-if(jugadores[id]){
-document.getElementById("resultado").innerHTML = `
-<h3>${jugadores[id].nombre}</h3>
-<p>Club: ${jugadores[id].club}</p>
-<p style="color:green;font-weight:bold;">Jugador habilitado</p>
-<p>Beneficio: 20% descuento</p>
-`;
-}else{
-document.getElementById("resultado").innerHTML = `
-<p style="color:red;font-weight:bold;">Jugador no válido</p>
-`;
+function obtenerParametro(nombre) {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(nombre);
 }
+
+const jugadorID = obtenerParametro("id");
+
+fetch(sheetURL)
+  .then(response => response.text())
+  .then(data => {
+
+    const filas = data.split("\n");
+
+    filas.forEach((fila, index) => {
+
+      if(index === 0) return; // salta encabezado
+
+      const columnas = fila.split(",");
+
+      const nombre = columnas[1];
+      const dni = columnas[2];
+      const club = columnas[3];
+      const categoria = columnas[4];
+      const ficha = columnas[5];
+      const estado = columnas[6];
+
+      if(ficha == jugadorID){
+
+        if(estado.trim() === "Activo"){
+
+          document.getElementById("resultado").innerHTML = `
+          <h2>${nombre}</h2>
+          <p>DNI: ${dni}</p>
+          <p>Club: ${club}</p>
+          <p>Categoría: ${categoria}</p>
+          <p style="color:green;font-weight:bold;">Jugador habilitado</p>
+          `;
+
+        } else {
+
+          document.getElementById("resultado").innerHTML = `
+          <h2>${nombre}</h2>
+          <p style="color:red;font-weight:bold;">Jugador NO habilitado</p>
+          `;
+
+        }
+
+      }
+
+    });
+
+  });
 
 </script>
-
 </body>
 </html>
