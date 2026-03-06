@@ -5,6 +5,8 @@
 <meta charset="UTF-8">
 <title>Carnet Jugador</title>
 
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 <style>
 
 body{
@@ -28,21 +30,19 @@ color:white;
 border:none;
 border-radius:5px;
 cursor:pointer;
+margin:5px;
 }
 
 #credencial{
-
 margin-top:30px;
 display:none;
 max-width:350px;
 margin-left:auto;
 margin-right:auto;
-
 background:white;
 padding:20px;
 border-radius:10px;
 box-shadow:0 0 10px rgba(0,0,0,0.2);
-
 }
 
 .estado-activo{
@@ -55,6 +55,24 @@ font-size:22px;
 color:red;
 font-weight:bold;
 font-size:22px;
+}
+
+#foto{
+width:120px;
+height:120px;
+border-radius:10px;
+object-fit:cover;
+margin-bottom:10px;
+}
+
+video{
+width:200px;
+border-radius:10px;
+margin-top:10px;
+}
+
+canvas{
+display:none;
 }
 
 </style>
@@ -75,9 +93,27 @@ font-size:22px;
 
 <div id="credencial"></div>
 
+<br>
+
+<button onclick="activarCamara()">📸 Sacar Foto</button>
+
+<br>
+
+<video id="video" autoplay></video>
+<br>
+<button onclick="capturar()">Tomar selfie</button>
+
+<canvas id="canvas"></canvas>
+
+<br><br>
+
+<button onclick="descargarCarnet()">💾 Descargar Carnet</button>
+
 <script>
 
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_IHlpIJR0ugREiUrJUlEUTcG93_EVYU9OSIvVVgBLy0MdrZj1X5Jer6larEULR6bLsAQtuZqyZ0RM/pub?output=csv";
+
+let jugadorGlobal = null;
 
 function buscarJugador(){
 
@@ -103,6 +139,8 @@ jugador = col;
 
 });
 
+jugadorGlobal = jugador;
+
 mostrarJugador(jugador);
 
 });
@@ -127,9 +165,15 @@ const estadoClase = jugador[6] === "Activo"
 ? "estado-activo"
 : "estado-inactivo";
 
+const linkQR = "https://la209dt.github.io/beneficios-jugadores/?id=" + jugador[5];
+
+const qr = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=" + linkQR;
+
 credencial.style.display="block";
 
 credencial.innerHTML = `
+
+<img id="foto" src="">
 
 <h2>⚽ Credencial Jugador</h2>
 
@@ -147,7 +191,54 @@ credencial.innerHTML = `
 ${jugador[6]}
 </p>
 
+<img src="${qr}">
+
 `;
+
+}
+
+function activarCamara(){
+
+navigator.mediaDevices.getUserMedia({ video: true })
+.then(stream => {
+
+document.getElementById("video").srcObject = stream;
+
+});
+
+}
+
+function capturar(){
+
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+
+canvas.width = video.videoWidth;
+canvas.height = video.videoHeight;
+
+const ctx = canvas.getContext("2d");
+
+ctx.drawImage(video,0,0);
+
+const foto = canvas.toDataURL("image/png");
+
+document.getElementById("foto").src = foto;
+
+}
+
+function descargarCarnet(){
+
+html2canvas(document.getElementById("credencial")).then(canvas => {
+
+const link = document.createElement("a");
+
+link.download = "carnet_jugador.png";
+
+link.href = canvas.toDataURL();
+
+link.click();
+
+});
 
 }
 
