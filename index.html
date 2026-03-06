@@ -2,101 +2,94 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Escáner de Jugadores</title>
-
-<script src="https://unpkg.com/html5-qrcode"></script>
+<title>Beneficios Jugadores</title>
 
 <style>
 body{
-font-family:Arial;
+font-family: Arial;
 text-align:center;
-margin-top:40px;
+margin-top:50px;
 }
 
-#reader{
+.card{
+border:1px solid #ccc;
+padding:20px;
 width:300px;
 margin:auto;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-#resultado{
-margin-top:30px;
-font-size:20px;
+.activo{
+color:green;
+font-weight:bold;
 }
+
+.inactivo{
+color:red;
+font-weight:bold;
+}
+
 </style>
+
 </head>
 
 <body>
 
-<h2>Escanear QR del jugador</h2>
-
-<div id="reader"></div>
+<h2>Beneficio de Jugadores</h2>
 
 <div id="resultado">
-Esperando escaneo...
+Buscando jugador...
 </div>
 
 <script>
 
-const sheetURL = "PEGA_AQUI_TU_LINK_CSV";
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTU_LINK_REAL/pub?output=csv";
 
-let jugadores = [];
+function getParametro(nombre){
+const params = new URLSearchParams(window.location.search);
+return params.get(nombre);
+}
+
+const id = getParametro("id");
 
 fetch(sheetURL)
 .then(res => res.text())
 .then(data => {
 
 const filas = data.split("\n").slice(1);
+let encontrado = false;
 
-jugadores = filas.map(f => {
-const c = f.split(",");
-return {
-id:c[0],
-nombre:c[1],
-equipo:c[2],
-beneficio:c[3]
-};
-});
+filas.forEach(f => {
 
-});
+const col = f.split(",");
 
-function buscarJugador(id){
+const ficha = col[5]; // columna F
 
-const j = jugadores.find(x => x.id == id);
+if(ficha == id){
 
-if(j){
+const estado = col[6];
 
 document.getElementById("resultado").innerHTML = `
-<h3>${j.nombre}</h3>
-<p>Equipo: ${j.equipo}</p>
-<p>Beneficio: ${j.beneficio}</p>
+<div class="card">
+<h3>${col[1]}</h3>
+<p><b>DNI:</b> ${col[2]}</p>
+<p><b>Club:</b> ${col[3]}</p>
+<p><b>Categoria:</b> ${col[4]}</p>
+<p class="${estado == "Activo" ? "activo" : "inactivo"}">
+${estado}
+</p>
+</div>
 `;
 
-}else{
+encontrado = true;
 
+}
+
+});
+
+if(!encontrado){
 document.getElementById("resultado").innerHTML = "Jugador no encontrado";
-
-}
-
-}
-
-function onScanSuccess(decodedText){
-
-buscarJugador(decodedText);
-
-}
-
-const html5QrCode = new Html5Qrcode("reader");
-
-Html5Qrcode.getCameras().then(devices => {
-
-if(devices.length){
-
-html5QrCode.start(
-devices[0].id,
-{ fps: 10, qrbox: 250 },
-onScanSuccess
-);
-
 }
 
 });
