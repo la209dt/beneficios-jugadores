@@ -3,21 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <title>Beneficios Jugadores</title>
-
 <style>
 body{
 font-family: Arial;
 text-align:center;
-margin-top:50px;
+padding:40px;
+background:#f2f2f2;
 }
 
 .card{
-border:1px solid #ccc;
-padding:20px;
-width:300px;
-margin:auto;
+background:white;
+padding:30px;
 border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
+display:inline-block;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+}
+
+h1{
+color:#222;
 }
 
 .activo{
@@ -29,67 +32,57 @@ font-weight:bold;
 color:red;
 font-weight:bold;
 }
-
 </style>
-
 </head>
 
 <body>
 
-<h2>Beneficio de Jugadores</h2>
+<h1>Beneficios Jugadores</h1>
 
-<div id="resultado">
-Buscando jugador...
-</div>
+<div id="resultado">Buscando jugador...</div>
 
 <script>
 
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTU_LINK_REAL/pub?output=csv";
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_IHlpIJR0ugREiUrJUlEUTcG93_EVYU9OSIvVVgBLy0MdrZj1X5Jer6larEULR6bLsAQtuZqyZ0RM/pub?output=csv";
 
-function getParametro(nombre){
 const params = new URLSearchParams(window.location.search);
-return params.get(nombre);
-}
-
-const id = getParametro("id");
+const id = params.get("id");
 
 fetch(sheetURL)
 .then(res => res.text())
 .then(data => {
 
 const filas = data.split("\n").slice(1);
-let encontrado = false;
 
-filas.forEach(f => {
+let jugador = null;
 
-const col = f.split(",");
+filas.forEach(fila=>{
+const col = fila.split(",");
 
-const ficha = col[5]; // columna F
+if(col[5] == id){
+jugador = col;
+}
+});
 
-if(ficha == id){
+if(jugador){
 
-const estado = col[6];
+let estadoClase = jugador[6].trim()=="Activo" ? "activo":"inactivo";
 
 document.getElementById("resultado").innerHTML = `
 <div class="card">
-<h3>${col[1]}</h3>
-<p><b>DNI:</b> ${col[2]}</p>
-<p><b>Club:</b> ${col[3]}</p>
-<p><b>Categoria:</b> ${col[4]}</p>
-<p class="${estado == "Activo" ? "activo" : "inactivo"}">
-${estado}
-</p>
+<h2>${jugador[1]}</h2>
+<p><b>DNI:</b> ${jugador[2]}</p>
+<p><b>Club:</b> ${jugador[3]}</p>
+<p><b>Categoria:</b> ${jugador[4]}</p>
+<p class="${estadoClase}">${jugador[6]}</p>
 </div>
 `;
 
-encontrado = true;
+}else{
 
-}
+document.getElementById("resultado").innerHTML =
+"<h2>Jugador no encontrado</h2>";
 
-});
-
-if(!encontrado){
-document.getElementById("resultado").innerHTML = "Jugador no encontrado";
 }
 
 });
