@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Carnet Jugador</title>
+<title>Carnet Digital Jugador</title>
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
@@ -16,10 +16,14 @@ text-align:center;
 padding:40px;
 }
 
+h1{
+margin-bottom:30px;
+}
+
 input{
 padding:10px;
 font-size:18px;
-width:200px;
+width:220px;
 }
 
 button{
@@ -28,21 +32,46 @@ font-size:18px;
 background:#007bff;
 color:white;
 border:none;
-border-radius:5px;
+border-radius:6px;
 cursor:pointer;
 margin:5px;
 }
 
+button:hover{
+background:#0056b3;
+}
+
+.paso{
+margin-top:25px;
+}
+
 #credencial{
+
 margin-top:30px;
 display:none;
 max-width:350px;
 margin-left:auto;
 margin-right:auto;
+
 background:white;
 padding:20px;
-border-radius:10px;
+border-radius:12px;
 box-shadow:0 0 10px rgba(0,0,0,0.2);
+
+}
+
+#foto{
+width:120px;
+height:120px;
+border-radius:10px;
+object-fit:cover;
+margin-bottom:10px;
+}
+
+video{
+width:220px;
+border-radius:10px;
+margin-top:10px;
 }
 
 .estado-activo{
@@ -57,20 +86,6 @@ font-weight:bold;
 font-size:22px;
 }
 
-#foto{
-width:120px;
-height:120px;
-border-radius:10px;
-object-fit:cover;
-margin-bottom:10px;
-}
-
-video{
-width:200px;
-border-radius:10px;
-margin-top:10px;
-}
-
 canvas{
 display:none;
 }
@@ -83,31 +98,55 @@ display:none;
 
 <h1>⚽ Carnet Digital Jugador</h1>
 
-<p>Ingrese su DNI</p>
+<div class="paso">
 
-<input id="dni" placeholder="DNI">
+<h2>Paso 1</h2>
+
+<p>Escribí tu DNI y generá tu carnet</p>
+
+<input id="dni" placeholder="Escribir DNI">
 
 <br><br>
 
-<button onclick="buscarJugador()">Generar Carnet</button>
+<button onclick="buscarJugador()">Generar carnet</button>
+
+</div>
 
 <div id="credencial"></div>
 
-<br>
+<div class="paso">
 
-<button onclick="activarCamara()">📸 Sacar Foto</button>
+<h2>Paso 2</h2>
 
-<br>
+<p>Activar cámara</p>
+
+<button onclick="activarCamara()">Activar cámara</button>
+
+</div>
 
 <video id="video" autoplay></video>
-<br>
+
+<div class="paso">
+
+<h2>Paso 3</h2>
+
+<p>Tomar foto para el carnet</p>
+
 <button onclick="capturar()">Tomar selfie</button>
+
+</div>
 
 <canvas id="canvas"></canvas>
 
-<br><br>
+<div class="paso">
 
-<button onclick="descargarCarnet()">💾 Descargar Carnet</button>
+<h2>Paso 4</h2>
+
+<p>Descargar tu carnet</p>
+
+<button onclick="descargarCarnet()">Descargar carnet</button>
+
+</div>
 
 <script>
 
@@ -175,7 +214,7 @@ credencial.innerHTML = `
 
 <img id="foto" src="">
 
-<h2>⚽ Credencial Jugador</h2>
+<h2>Credencial Jugador</h2>
 
 <h3>${jugador[1]}</h3>
 
@@ -183,9 +222,9 @@ credencial.innerHTML = `
 
 <p><b>Club:</b> ${jugador[3]}</p>
 
-<p><b>Categoria:</b> ${jugador[4]}</p>
+<p><b>Categoría:</b> ${jugador[4]}</p>
 
-<p>ID COMET: ${jugador[5]}</p>
+<p><b>ID COMET:</b> ${jugador[5]}</p>
 
 <p class="${estadoClase}">
 ${jugador[6]}
