@@ -1,1 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
 
+<meta charset="UTF-8">
+<title>Carnet Jugador</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#f2f2f2;
+text-align:center;
+padding:40px;
+}
+
+input{
+padding:10px;
+font-size:18px;
+width:200px;
+}
+
+button{
+padding:10px 20px;
+font-size:18px;
+background:#007bff;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+#credencial{
+
+margin-top:30px;
+display:none;
+max-width:350px;
+margin-left:auto;
+margin-right:auto;
+
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.2);
+
+}
+
+.estado-activo{
+color:green;
+font-weight:bold;
+font-size:22px;
+}
+
+.estado-inactivo{
+color:red;
+font-weight:bold;
+font-size:22px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>⚽ Carnet Digital Jugador</h1>
+
+<p>Ingrese su DNI</p>
+
+<input id="dni" placeholder="DNI">
+
+<br><br>
+
+<button onclick="buscarJugador()">Generar Carnet</button>
+
+<div id="credencial"></div>
+
+<script>
+
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_IHlpIJR0ugREiUrJUlEUTcG93_EVYU9OSIvVVgBLy0MdrZj1X5Jer6larEULR6bLsAQtuZqyZ0RM/pub?output=csv";
+
+function buscarJugador(){
+
+const dni = document.getElementById("dni").value.trim();
+
+fetch(sheetURL)
+.then(res => res.text())
+.then(data => {
+
+const filas = data.split("\n");
+
+let jugador = null;
+
+filas.forEach(fila=>{
+
+const col = fila.split(",");
+
+const dniSheet = col[2] ? col[2].trim() : "";
+
+if(dniSheet === dni){
+jugador = col;
+}
+
+});
+
+mostrarJugador(jugador);
+
+});
+
+}
+
+function mostrarJugador(jugador){
+
+const credencial = document.getElementById("credencial");
+
+if(!jugador){
+
+credencial.style.display="block";
+
+credencial.innerHTML = "<h2>Jugador no encontrado</h2>";
+
+return;
+
+}
+
+const estadoClase = jugador[6] === "Activo"
+? "estado-activo"
+: "estado-inactivo";
+
+credencial.style.display="block";
+
+credencial.innerHTML = `
+
+<h2>⚽ Credencial Jugador</h2>
+
+<h3>${jugador[1]}</h3>
+
+<p><b>DNI:</b> ${jugador[2]}</p>
+
+<p><b>Club:</b> ${jugador[3]}</p>
+
+<p><b>Categoria:</b> ${jugador[4]}</p>
+
+<p>ID COMET: ${jugador[5]}</p>
+
+<p class="${estadoClase}">
+${jugador[6]}
+</p>
+
+`;
+
+}
+
+</script>
+
+</body>
+</html>
