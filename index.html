@@ -57,9 +57,13 @@ const filas = data.split("\n").slice(1);
 let jugador = null;
 
 filas.forEach(fila=>{
+
 const col = fila.split(",");
 
-if(col[5] == id){
+const ficha = col[5] ? col[5].trim() : "";
+
+if(ficha === id){
+
 jugador = col;
 }
 });
