@@ -16,10 +16,6 @@ text-align:center;
 padding:40px;
 }
 
-h1{
-margin-bottom:30px;
-}
-
 input{
 padding:10px;
 font-size:18px;
@@ -49,28 +45,48 @@ margin-top:25px;
 
 margin-top:30px;
 display:none;
-max-width:350px;
+width:300px;
 margin-left:auto;
 margin-right:auto;
 
 background:white;
-padding:20px;
-border-radius:12px;
-box-shadow:0 0 10px rgba(0,0,0,0.2);
+border-radius:15px;
 
+box-shadow:0 0 12px rgba(0,0,0,0.3);
+
+overflow:hidden;
+
+}
+
+.header{
+
+background:#0d6efd;
+color:white;
+padding:15px;
+
+}
+
+.logo{
+width:60px;
 }
 
 #foto{
+
 width:120px;
 height:120px;
-border-radius:10px;
+border-radius:100px;
 object-fit:cover;
-margin-bottom:10px;
+margin-top:10px;
+
+border:4px solid white;
+
 }
 
-video{
-width:220px;
-border-radius:10px;
+.info{
+padding:15px;
+}
+
+.qr{
 margin-top:10px;
 }
 
@@ -86,6 +102,12 @@ font-weight:bold;
 font-size:22px;
 }
 
+video{
+width:220px;
+border-radius:10px;
+margin-top:10px;
+}
+
 canvas{
 display:none;
 }
@@ -96,7 +118,7 @@ display:none;
 
 <body>
 
-<h1>⚽ Carnet Digital Jugador</h1>
+<h1>⚽ Credencial Jugador</h1>
 
 <div class="paso">
 
@@ -152,8 +174,6 @@ display:none;
 
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_IHlpIJR0ugREiUrJUlEUTcG93_EVYU9OSIvVVgBLy0MdrZj1X5Jer6larEULR6bLsAQtuZqyZ0RM/pub?output=csv";
 
-let jugadorGlobal = null;
-
 function buscarJugador(){
 
 const dni = document.getElementById("dni").value.trim();
@@ -178,8 +198,6 @@ jugador = col;
 
 });
 
-jugadorGlobal = jugador;
-
 mostrarJugador(jugador);
 
 });
@@ -193,7 +211,6 @@ const credencial = document.getElementById("credencial");
 if(!jugador){
 
 credencial.style.display="block";
-
 credencial.innerHTML = "<h2>Jugador no encontrado</h2>";
 
 return;
@@ -206,15 +223,21 @@ const estadoClase = jugador[6] === "Activo"
 
 const linkQR = "https://la209dt.github.io/beneficios-jugadores/?id=" + jugador[5];
 
-const qr = "https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=" + linkQR;
+const qr = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + linkQR;
 
 credencial.style.display="block";
 
 credencial.innerHTML = `
 
-<img id="foto" src="">
+<div class="header">
 
 <h2>Credencial Jugador</h2>
+
+</div>
+
+<div class="info">
+
+<img id="foto">
 
 <h3>${jugador[1]}</h3>
 
@@ -230,7 +253,11 @@ credencial.innerHTML = `
 ${jugador[6]}
 </p>
 
+<div class="qr">
 <img src="${qr}">
+</div>
+
+</div>
 
 `;
 
@@ -271,7 +298,7 @@ html2canvas(document.getElementById("credencial")).then(canvas => {
 
 const link = document.createElement("a");
 
-link.download = "carnet_jugador.png";
+link.download = "credencial_jugador.png";
 
 link.href = canvas.toDataURL();
 
