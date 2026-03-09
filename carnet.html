@@ -278,13 +278,16 @@ function descargarCarnet(){
 
 const nombre=document.getElementById("nombre").innerText.replace(/\s+/g,"_");
 
-html2canvas(document.getElementById("credencial")).then(canvas=>{
+html2canvas(document.getElementById("credencial"),{
+useCORS:true,
+allowTaint:true
+}).then(canvas=>{
 
 const link=document.createElement("a");
 
 link.download="Carnet_LIFUBA_"+nombre+".png";
 
-link.href=canvas.toDataURL();
+link.href=canvas.toDataURL("image/png");
 
 link.click();
 
