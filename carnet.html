@@ -1,274 +1,245 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <meta charset="UTF-8">
-<title>Carnet Digital Jugador</title>
+<title>Carnet LIFUBA</title>
 
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
 <style>
 
 body{
-font-family: Arial;
-background:#f2f2f2;
+font-family:Arial;
 text-align:center;
-padding:40px;
+background:#e9eef3;
+padding:20px;
+}
+
+h2{
+margin-bottom:5px;
 }
 
 input{
 padding:10px;
 font-size:18px;
-width:220px;
+border-radius:6px;
+border:1px solid #ccc;
 }
 
 button{
-padding:10px 20px;
-font-size:18px;
-background:#007bff;
-color:white;
+padding:10px 18px;
+font-size:15px;
+margin:5px;
+cursor:pointer;
 border:none;
 border-radius:6px;
-cursor:pointer;
-margin:5px;
+background:#1d4ed8;
+color:white;
 }
 
 button:hover{
-background:#0056b3;
-}
-
-.paso{
-margin-top:25px;
-}
-
-#credencial{
-
-margin-top:30px;
-display:none;
-width:300px;
-margin-left:auto;
-margin-right:auto;
-
-background:white;
-border-radius:15px;
-
-box-shadow:0 0 12px rgba(0,0,0,0.3);
-
-overflow:hidden;
-
-}
-
-.header{
-
-background:#0d6efd;
-color:white;
-padding:15px;
-
-}
-
-.logo{
-width:60px;
-}
-
-#foto{
-
-width:120px;
-height:120px;
-border-radius:100px;
-object-fit:cover;
-margin-top:10px;
-
-border:4px solid white;
-
-}
-
-.info{
-padding:15px;
-}
-
-.qr{
-margin-top:10px;
-}
-
-.estado-activo{
-color:green;
-font-weight:bold;
-font-size:22px;
-}
-
-.estado-inactivo{
-color:red;
-font-weight:bold;
-font-size:22px;
+background:#1e40af;
 }
 
 video{
-width:220px;
+width:280px;
 border-radius:10px;
 margin-top:10px;
 }
 
-canvas{
-display:none;
+.paso{
+font-weight:bold;
+margin-top:20px;
+}
+
+#credencial{
+
+width:340px;
+height:540px;
+background:white;
+border-radius:16px;
+margin:auto;
+box-shadow:0 10px 25px rgba(0,0,0,0.25);
+overflow:hidden;
+}
+
+.header{
+background:#0f172a;
+color:white;
+padding:15px;
+}
+
+.header h3{
+margin:0;
+font-size:20px;
+}
+
+.subtitulo{
+font-size:13px;
+opacity:0.9;
+}
+
+.contenido{
+padding:15px;
+}
+
+.foto{
+
+width:150px;
+height:150px;
+border-radius:50%;
+object-fit:cover;
+border:4px solid #ddd;
+margin-top:10px;
+
+}
+
+.nombre{
+font-size:22px;
+font-weight:bold;
+margin-top:10px;
+}
+
+.dato{
+font-size:15px;
+margin-top:3px;
+}
+
+.qr{
+margin-top:15px;
+}
+
+.footer{
+
+background:#f3f4f6;
+font-size:12px;
+padding:8px;
+margin-top:10px;
+
 }
 
 </style>
-
 </head>
 
 <body>
 
-<h1>⚽ Credencial Jugador</h1>
+<h2>Carnet Jugador LIFUBA</h2>
 
-<div class="paso">
+<div class="paso">Paso 1: Escribe tu DNI y genera el carnet</div>
 
-<h2>Paso 1</h2>
+<input id="dni" placeholder="Ingresa tu DNI">
+<button onclick="buscarJugador()">Generar</button>
 
-<p>Escribí tu DNI y generá tu carnet</p>
+<br>
 
-<input id="dni" placeholder="Escribir DNI">
-
-<br><br>
-
-<button onclick="buscarJugador()">Generar carnet</button>
-
-</div>
-
-<div id="credencial"></div>
-
-<div class="paso">
-
-<h2>Paso 2</h2>
-
-<p>Activar cámara</p>
+<div class="paso">Paso 2: Activar cámara</div>
 
 <button onclick="activarCamara()">Activar cámara</button>
 
-</div>
+<br>
 
 <video id="video" autoplay></video>
 
-<div class="paso">
+<br>
 
-<h2>Paso 3</h2>
+<div class="paso">Paso 3: Tomar foto</div>
 
-<p>Tomar foto para el carnet</p>
+<button onclick="capturar()">Tomar foto</button>
 
-<button onclick="capturar()">Tomar selfie</button>
+<canvas id="canvas" style="display:none"></canvas>
+
+<br>
+
+<div class="paso">Paso 4: Descargar carnet</div>
+
+<button onclick="descargarCarnet()">Descargar carnet</button>
+
+<br><br>
+
+<div id="credencial">
+
+<div class="header">
+
+<h3>LIGA DE FUTBOL BARILOCHE</h3>
+<div class="subtitulo">CARNET OFICIAL DE JUGADOR</div>
 
 </div>
 
-<canvas id="canvas"></canvas>
+<div class="contenido">
 
-<div class="paso">
+<img id="foto" class="foto">
 
-<h2>Paso 4</h2>
+<div class="nombre" id="nombre">Nombre jugador</div>
 
-<p>Descargar tu carnet</p>
+<div class="dato" id="club"></div>
+<div class="dato" id="categoria"></div>
 
-<button onclick="descargarCarnet()">Descargar carnet</button>
+<div class="qr">
+<img id="qr">
+</div>
+
+</div>
+
+<div class="footer">
+
+Carnet digital • LIFUBA
+
+</div>
 
 </div>
 
 <script>
 
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_IHlpIJR0ugREiUrJUlEUTcG93_EVYU9OSIvVVgBLy0MdrZj1X5Jer6larEULR6bLsAQtuZqyZ0RM/pub?output=csv";
+const sheetURL="https://docs.google.com/spreadsheets/d/e/2PACX-1vR_IHlpIJR0ugREiUrJUlEUTcG93_EVYU9OSIvVVgBLy0MdrZj1X5Jer6larEULR6bLsAQtuZqyZ0RM/pub?output=csv";
 
-function buscarJugador(){
+let jugadorActual=null;
 
-const dni = document.getElementById("dni").value.trim();
+async function buscarJugador(){
 
-fetch(sheetURL)
-.then(res => res.text())
-.then(data => {
+const dni=document.getElementById("dni").value;
 
-const filas = data.split("\n");
+const res=await fetch(sheetURL);
+const data=await res.text();
 
-let jugador = null;
+const filas=data.split("\n").slice(1);
 
-filas.forEach(fila=>{
+for(let fila of filas){
 
-const col = fila.split(",");
+const col=fila.split(",");
 
-const dniSheet = col[2] ? col[2].trim() : "";
+if(col[2]==dni){
 
-if(dniSheet === dni){
-jugador = col;
-}
+jugadorActual={
+nombre:col[1],
+club:col[3],
+categoria:col[4],
+ficha:col[5]
+};
 
-});
+document.getElementById("nombre").innerText=jugadorActual.nombre;
+document.getElementById("club").innerText="Club: "+jugadorActual.club;
+document.getElementById("categoria").innerText="Categoría: "+jugadorActual.categoria;
 
-mostrarJugador(jugador);
+const qrURL="https://la209dt.github.io/beneficios-jugadores/?id="+jugadorActual.ficha;
 
-});
-
-}
-
-function mostrarJugador(jugador){
-
-const credencial = document.getElementById("credencial");
-
-if(!jugador){
-
-credencial.style.display="block";
-credencial.innerHTML = "<h2>Jugador no encontrado</h2>";
+document.getElementById("qr").src="https://api.qrserver.com/v1/create-qr-code/?size=140x140&data="+qrURL;
 
 return;
 
 }
 
-const estadoClase = jugador[6] === "Activo"
-? "estado-activo"
-: "estado-inactivo";
+}
 
-const linkQR = "https://la209dt.github.io/beneficios-jugadores/?id=" + jugador[5];
-
-const qr = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" + linkQR;
-
-credencial.style.display="block";
-
-credencial.innerHTML = `
-
-<div class="header">
-
-<h2>Credencial Jugador</h2>
-
-</div>
-
-<div class="info">
-
-<img id="foto">
-
-<h3>${jugador[1]}</h3>
-
-<p><b>DNI:</b> ${jugador[2]}</p>
-
-<p><b>Club:</b> ${jugador[3]}</p>
-
-<p><b>Categoría:</b> ${jugador[4]}</p>
-
-<p><b>ID COMET:</b> ${jugador[5]}</p>
-
-<p class="${estadoClase}">
-${jugador[6]}
-</p>
-
-<div class="qr">
-<img src="${qr}">
-</div>
-
-</div>
-
-`;
+alert("Jugador no encontrado");
 
 }
 
 function activarCamara(){
 
-navigator.mediaDevices.getUserMedia({ video: true })
-.then(stream => {
+navigator.mediaDevices.getUserMedia({video:true})
+.then(stream=>{
 
-document.getElementById("video").srcObject = stream;
+document.getElementById("video").srcObject=stream;
 
 });
 
@@ -276,31 +247,44 @@ document.getElementById("video").srcObject = stream;
 
 function capturar(){
 
-const video = document.getElementById("video");
-const canvas = document.getElementById("canvas");
+const video=document.getElementById("video");
+const canvas=document.getElementById("canvas");
+const ctx=canvas.getContext("2d");
 
-canvas.width = video.videoWidth;
-canvas.height = video.videoHeight;
+const size=Math.min(video.videoWidth,video.videoHeight);
 
-const ctx = canvas.getContext("2d");
+canvas.width=size;
+canvas.height=size;
 
-ctx.drawImage(video,0,0);
+ctx.drawImage(
+video,
+(video.videoWidth-size)/2,
+(video.videoHeight-size)/2,
+size,
+size,
+0,
+0,
+size,
+size
+);
 
-const foto = canvas.toDataURL("image/png");
+const foto=canvas.toDataURL("image/png");
 
-document.getElementById("foto").src = foto;
+document.getElementById("foto").src=foto;
 
 }
 
 function descargarCarnet(){
 
-html2canvas(document.getElementById("credencial")).then(canvas => {
+const nombre=document.getElementById("nombre").innerText.replace(/\s+/g,"_");
 
-const link = document.createElement("a");
+html2canvas(document.getElementById("credencial")).then(canvas=>{
 
-link.download = "credencial_jugador.png";
+const link=document.createElement("a");
 
-link.href = canvas.toDataURL();
+link.download="Carnet_LIFUBA_"+nombre+".png";
+
+link.href=canvas.toDataURL();
 
 link.click();
 
